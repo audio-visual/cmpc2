@@ -3,8 +3,10 @@
     We fix some bugs and modify the pre-emphasis
 """ 
 
-
+import numpy as np
 import numpy, numpy.fft
+import os
+import shutil
 from .vad import read_wave, write_wave, frame_generator, vad_collector
 
 def rm_sil(voice_file, vad_obj):
@@ -58,10 +60,10 @@ def get_fbank(voice_file, vad_obj, mfc_obj,full_frame_number=800):
 
 
 def mel(f):
-    return 2595. * numpy.log10(1. + f / 700.)
+    return 2595. * np.log10(1. + f / 700.)
 
 def melinv(m):
-    return 700. * (numpy.power(10., m / 2595.) - 1.)
+    return 700. * (np.power(10., m / 2595.) - 1.)
 
 class MFCC(object):
     def __init__(self, nfilt=40, ncep=13,
@@ -79,14 +81,14 @@ class MFCC(object):
 
         # Build Hamming window
         self.wlen = int(wlen * samprate)
-        self.win = numpy.hamming(self.wlen)
+        self.win = np.hamming(self.wlen)
 
         # Prior sample for pre-emphasis
         self.prior = 0
         self.alpha = alpha
 
         # Build mel filter matrix
-        self.filters = numpy.zeros((int(nfft/2)+1,nfilt), 'd')
+        self.filters = np.zeros((int(nfft/2)+1,nfilt), 'd')
         dfreq = float(samprate) / nfft
         if upperf > samprate/2:
             raise(Exception,
@@ -95,7 +97,7 @@ class MFCC(object):
         melmin = mel(lowerf)
         dmelbw = (melmax - melmin) / (nfilt + 1)
         # Filter edges, in Hz
-        filt_edge = melinv(melmin + dmelbw * numpy.arange(nfilt + 2, dtype='d'))
+        filt_edge = melinv(melmin + dmelbw * np.arange(nfilt + 2, dtype='d'))
 
         for whichfilt in range(0, nfilt):
             # Filter triangles, in DFT points
@@ -133,18 +135,18 @@ class MFCC(object):
 
         # Build DCT matrix
         self.s2dct = s2dctmat(nfilt, ncep, 1./nfilt)
-        self.dct = dctmat(nfilt, ncep, numpy.pi/nfilt)
+        self.dct = dctmat(nfilt, ncep, np.pi/nfilt)
 
     def sig2s2mfc(self, sig):
         nfr = int(len(sig) / self.fshift + 1)
-        mfcc = numpy.zeros((nfr, self.ncep), 'd')
+        mfcc = np.zeros((nfr, self.ncep), 'd')
         fr = 0
         while fr < nfr:
             start = round(fr * self.fshift)
             end = min(len(sig), start + self.wlen)
             frame = sig[start:end]
             if len(frame) < self.wlen:
-                frame = numpy.resize(frame,self.wlen)
+                frame = np.resize(frame,self.wlen)
                 frame[self.wlen:] = 0
             mfcc[fr] = self.frame2s2mfc(frame)
             fr = fr + 1
@@ -152,14 +154,14 @@ class MFCC(object):
 
     def sig2logspec(self, sig):
         nfr = int(len(sig) / self.fshift + 1)
-        mfcc = numpy.zeros((nfr, self.nfilt), 'd')
+        mfcc = np.zeros((nfr, self.nfilt), 'd')
         fr = 0
         while fr < nfr:
             start = round(fr * self.fshift)
             end = min(len(sig), start + self.wlen)
             frame = sig[start:end]
             if len(frame) < self.wlen:
-                frame = numpy.resize(frame,self.wlen)
+                frame = np.resize(frame,self.wlen)
                 frame[self.wlen:] = 0
             mfcc[fr] = self.frame2logspec(frame)
             fr = fr + 1
@@ -175,20 +177,20 @@ class MFCC(object):
         self.prior = frame[-1]
         '''
         # NOTE: slightly different pre-emphasis for speed up
-        frame = numpy.insert(frame, 0, self.prior)
+        frame = np.insert(frame, 0, self.prior)
         self.prior = frame[-1]
         return frame[1:] - self.alpha * frame[:-1]
         
     def frame2logspec(self, frame):
         frame = self.pre_emphasis(frame) * self.win
-        fft = numpy.fft.rfft(frame, self.nfft)
+        fft = np.fft.rfft(frame, self.nfft)
         # Square of absolute value
         power = fft.real * fft.real + fft.imag * fft.imag
-        return numpy.log(numpy.dot(power, self.filters).clip(1e-5,numpy.inf))
+        return np.log(np.dot(power, self.filters).clip(1e-5,np.inf))
 
     def frame2s2mfc(self, frame):
         logspec = self.frame2logspec(frame)
-        return numpy.dot(logspec, self.s2dct.T) / self.nfilt
+        return np.dot(logspec, self.s2dct.T) / self.nfilt
 
 def s2dctmat(nfilt,ncep,freqstep):
     """Return the 'legacy' not-quite-DCT matrix used by Sphinx"""
