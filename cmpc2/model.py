@@ -1,5 +1,10 @@
 import numpy as np 
+import torch
+from .fv_wrapper import  FV_Wrapper
 
-def load():
-    a=np.ones((1,3))
-    print('load a:',a)
+
+
+def load(path):
+    # load ckpt
+    fv = FV_Wrapper(pretrain=False, last_dim=512, None, False)
+    return fv.get_models()
