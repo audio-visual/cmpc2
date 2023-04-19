@@ -4,6 +4,7 @@
 """ 
 
 import numpy as np
+from scipy.io import wavfile
 import numpy, numpy.fft
 import os
 import shutil
