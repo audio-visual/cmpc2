@@ -17,7 +17,7 @@ def tokenize(wav_file,valid_level=2,min_time=800):
     vad_obj = webrtcvad.Vad(valid_level)
     mfc_obj = MFCC(nfilt=64, lowerf=20., upperf=7200., samprate=16000, nfft=1024, wlen=0.025)
     fbank = get_fbank(wav_file,vad_obj, mfc_obj, min_time)
-    return fbank
+    return torch.from_numpy(fbank)
 
 def load_voice(np_path,min_time=800):
    

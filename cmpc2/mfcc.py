@@ -55,8 +55,8 @@ def get_fbank(voice_file, vad_obj, mfc_obj,full_frame_number=800):
           fbank = np.append(fbank, fbank[0:init_frame_number], axis=0)
           fbank = fbank[0:full_frame_number,:]
     fbank = fbank.T[np.newaxis, ...]
-    fbank = torch.from_numpy(fbank.astype('float32'))
-    return fbank
+    # fbank = torch.from_numpy(fbank.astype('float32'))
+    return fbank.astype('float32')
 
 
 
