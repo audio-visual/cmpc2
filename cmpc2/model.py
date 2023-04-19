@@ -1,6 +1,7 @@
 import numpy as np 
 import torch
 import webrtcvad
+from PIL import Image
 from .mfcc import MFCC,get_fbank
 from .fv_wrapper import  FV_Wrapper,load_model
 
@@ -25,6 +26,12 @@ def load_voice(np_path,min_time=800):
     
     voice_data = voice_data.T.astype('float32') 
     pt = np.random.randint(voice_data.shape[1] - min_time + 1)
-    voice_data = voice_data[:,pt:pt+min_time]
+    voice_data = voice_data[np.newaxis,:,pt:pt+min_time]
     
     return torch.from_numpy(voice_data)
+
+def load_face(file, img_size):
+    face = Image.open(file).convert('RGB').resize([img_size, img_size])
+    face = np.transpose(np.array(face), (2, 0, 1))
+    face = ((face - 127.5) / 127.5).astype('float32')
+    return face
