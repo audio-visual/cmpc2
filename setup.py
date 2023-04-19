@@ -18,5 +18,5 @@ setuptools.setup(
     license='MIT',
     packages=['cmpc2'],
     install_requires=['numpy',
-    'torch'],
+    'torch','webrtcvad'],
 )
