@@ -1,7 +1,7 @@
 import numpy as np 
 import torch
 import webrtcvad
-from .mfcc import MFCC
+from .mfcc import MFCC,get_fbank
 from .fv_wrapper import  FV_Wrapper,load_model
 
 
@@ -13,8 +13,8 @@ def load(path):
     model = load_model(fv, path)
     return model
 
-def tokenize(wav_file,min_time=800):
-    vad_obj = webrtcvad.Vad(2)
+def tokenize(wav_file,valid_level=2,min_time=800):
+    vad_obj = webrtcvad.Vad(valid_level)
     mfc_obj = MFCC(nfilt=64, lowerf=20., upperf=7200., samprate=16000, nfft=1024, wlen=0.025)
     fbank = get_fbank(wav_file,vad_obj, mfc_obj, min_time)
     return fbank
@@ -26,5 +26,5 @@ def load_voice(np_path,min_time=800):
     voice_data = voice_data.T.astype('float32') 
     pt = np.random.randint(voice_data.shape[1] - min_time + 1)
     voice_data = voice_data[:,pt:pt+min_time]
-   
-    return voice_data
+    
+    return torch.from_numpy(voice_data)
