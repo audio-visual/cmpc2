@@ -1,1 +1,1 @@
-from .model import load, tokenize, load_voice
+from .model import load, tokenize, load_voice,load_face
