@@ -41,3 +41,12 @@ model = cmpc2.load(path)
 audio_emb, frame_emb = model(audio.cuda(),frame.cuda())
 
 ```
+
+5. get other modal samples  
+```python
+memory_path = '/root/projects/CMPC/checkpoints/origin/cmpc/frame_memory_best.pth.tar'
+df_path = '/root/projects/CMPC/data/training.csv'
+
+image_paths = getKNearestSamples(audio_emb,memory_path,df_path, cluster=1000,K=3)
+```
+
