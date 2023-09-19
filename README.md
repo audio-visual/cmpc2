@@ -29,6 +29,8 @@ frame_path = 'xx.jpg/png'
 visual_preprocess, audio_preprocess = cmpc2.visual_preprocess(img_size), cmpc2.audio_preprocess()
 audio = audio_preprocess(wav_path).unsqueeze(0).to(device) #(1,1,64,800)
 visual = visual_preprocess(frame_path).unsqueeze(0).to(device) #(1,3,224,224)
+# or (to keep the same with CLIP)
+# visual = visual_preprocess(Image.open(frame_path)).unsqueeze(0).to(device)
 
 audio_emb, frame_emb = model(audio, visual) # (1,512)
 
