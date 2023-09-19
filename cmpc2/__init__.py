@@ -1,2 +1,2 @@
 from .model import *
-from .memory import getKNearestSamples
+# from .memory import getKNearestSamples
