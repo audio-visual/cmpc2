@@ -10,39 +10,31 @@ this repository convert the cmpc to a python package, in order to get the featur
 1. install it  
 `pip install git+https://github.com/wuyangchen97/cmpc2.git` 
 
-2. load voice from wav file or processed numpy file(assume already normalized)  
+2. get features 
 ```python
 import cmpc2
-wav_path = 'xx.wav'
-audio = cmpc2.tokenize(wav_path) #(1,64,800)
-# or directly use np file
-# np_path = 'xx.np'
-# audio = cmpc2.load_voice(np_path)
-```
-3. load image
-```python
-frame_path = 'xx.jpg/png'
-img_size = 128
-frame = cmpc2.load_face(frame_path,img_size)
-```
+import torch
 
-4. get features  
-```python
-# (batch_size, channel, features, time)
-# audio = torch.randn(2,1,64,800)
-audio = audio[None,...]
-# (batch_size, channel, img_size, img_size)
-# frame = torch.randn(2,3,128,128)
-frame = frame[None,...]
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
 path = 'xx.tar' #pretrained cmpc weight
-model = cmpc2.load(path)
+model = cmpc2.load(path).to(device)
+# you should manually change the model mode
+model.eval()
 
-# audio_emb,frame_emb:(batch_size, 512)
-audio_emb, frame_emb = model(audio.cuda(),frame.cuda())
+wav_path = 'xx.wav'
+img_size = 224
+frame_path = 'xx.jpg/png'
+
+visual_preprocess, audio_preprocess = cmpc2.visual_preprocess(img_size), cav_mae.audio_preprocess()
+audio = visual_preprocess(wav_path).unsqueeze(0).to(device) #(1,1,64,800)
+visual = visual_preprocess(frame_path).unsqueeze(0).to(device) #(1,3,224,224)
+
+audio_emb, frame_emb = model(audio, visual)
 
 ```
 
-5. get other modal samples  
+3. get other modal samples  
 ```python
 memory_path = '/root/projects/CMPC/checkpoints/origin/cmpc/frame_memory_best.pth.tar'
 df_path = '/root/projects/CMPC/data/training.csv'

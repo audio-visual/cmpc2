@@ -47,8 +47,8 @@ def load_model(model, checkpoint_fn): # load face-voice model
     # model.load_state_dict({k.replace('module.', ''): ckp['model'][k] for k in ckp['model']})
     model.load_state_dict(ckp['model'])
     # logger.info('Load from {} at iteration #{}'.format(checkpoint_fn, ckp['epoch']))
-    model = model.cuda()
-    model.eval()
+    # model = model.cuda()
+    # model.eval()
 
     return model
 
