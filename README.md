@@ -26,7 +26,7 @@ wav_path = 'xx.wav'
 img_size = 224
 frame_path = 'xx.jpg/png'
 
-visual_preprocess, audio_preprocess = cmpc2.visual_preprocess(img_size), cav_mae.audio_preprocess()
+visual_preprocess, audio_preprocess = cmpc2.visual_preprocess(img_size), cmpc2.audio_preprocess()
 audio = visual_preprocess(wav_path).unsqueeze(0).to(device) #(1,1,64,800)
 visual = visual_preprocess(frame_path).unsqueeze(0).to(device) #(1,3,224,224)
 

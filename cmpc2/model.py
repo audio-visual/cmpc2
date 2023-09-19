@@ -6,7 +6,6 @@ from .mfcc import MFCC,get_fbank
 from .fv_wrapper import  FV_Wrapper,load_model
 
 
-
 def load(path):
     # load ckpt
     # model load chechpoints
@@ -22,6 +21,7 @@ def audio_preprocess(valid_level=2,min_time=800):
         return torch.from_numpy(fbank)
     return _wav2fbank
 
+
 def load_voice(min_time=800):
     def _load(np_path):
         voice_data = np.load(np_path)#n_frames,64 ?
@@ -33,9 +33,10 @@ def load_voice(min_time=800):
         return torch.from_numpy(voice_data)
     return _load
 
+
 def visual_preprocess(img_size=224):
     def _load_face(file):
-        if isinstance(file, Image):
+        if not isinstance(file, str):
             face = file.convert('RGB').resize([img_size, img_size])
         else:
             face = Image.open(file).convert('RGB').resize([img_size, img_size])
