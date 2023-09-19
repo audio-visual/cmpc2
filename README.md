@@ -8,7 +8,7 @@ this repository convert the cmpc to a python package, in order to get the featur
 
 ## How to use:  
 1. install it  
-`pip install git+https://github.com/wuyangchen97/cmpc2.git` 
+`pip install git+https://github.com/audio-visual/cmpc2.git` 
 
 2. get features 
 ```python

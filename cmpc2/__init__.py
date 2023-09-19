@@ -1,2 +1,2 @@
-from .model import load, tokenize, load_voice,load_face
+from .model import *
 from .memory import getKNearestSamples
