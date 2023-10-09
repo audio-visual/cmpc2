@@ -18,7 +18,7 @@ def getKNearestSamples(audio_feature, memory_path, df_path, cluster=1000,K=3):
     audio_feature = F.normalize(audio_feature)
     centroid = F.normalize(centroid, dim=-1)
     D_ij = ((audio_feature - centroid) ** 2).sum(-1)
-    
+
     # choose K nearest centroids
     ids = torch.topk(-D_ij,K).indices
    
@@ -84,7 +84,7 @@ if __name__ == '__main__':
     # you should manually change the model mode
     model.eval()
 
-    frame = torch.randn(1,3,224,224).to(device)
+    frame = torch.randn(1,3,256,256).to(device)
     audio_emb, frame_emb = model(audio,frame)
     image_paths = getKNearestSamples(audio_emb,memory_path,df_path)
     print(image_paths)
