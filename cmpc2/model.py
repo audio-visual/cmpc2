@@ -13,7 +13,7 @@ def load(path):
     model = load_model(fv, path)
     return model
 
-def audio_preprocess(valid_level=2,min_time=800):
+def audio_preprocess(valid_level=2,min_time=800):# used for inference
     def _wav2fbank(wav_file):
         vad_obj = webrtcvad.Vad(valid_level)
         mfc_obj = MFCC(nfilt=64, lowerf=20., upperf=7200., samprate=16000, nfft=1024, wlen=0.025)
