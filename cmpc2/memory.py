@@ -18,7 +18,8 @@ def getKNearestSamples(audio_feature, memory_path, df_path, cluster=1000,K=3):
     audio_feature = F.normalize(audio_feature)
     centroid = F.normalize(centroid, dim=-1)
     D_ij = ((audio_feature - centroid) ** 2).sum(-1)
-   
+    
+    # choose K nearest centroids
     ids = torch.topk(-D_ij,K).indices
    
     inst2clusters = mem['inst2cluster']
@@ -72,13 +73,12 @@ if __name__ == '__main__':
     import cmpc2
     memory_path = '/home/cwy/下载/frame_memory_best.pth.tar'
     df_path = '/home/cwy/下载/training.csv'
-    # audio_feature = torch.randn(1,512).cuda() # TODO change to the right training audio sample!
-    audio_path = './id10840_0eRPKDAV-I0_00001.npy'
+    audio_path = './example/id10840_0eRPKDAV-I0_00001.wav'
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    audio_loader = cmpc2.load_voice()
-    audio = audio_loader(audio_path).to(device)
+    audio_preprocess = cmpc2.audio_preprocess()
+    audio = audio_preprocess(audio_path).unsqueeze(0).to(device)
     path = '/home/cwy/下载/model_best.pth.tar' #pretrained cmpc weight
     model = cmpc2.load(path).to(device)
     # you should manually change the model mode

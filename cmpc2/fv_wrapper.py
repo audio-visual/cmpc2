@@ -42,7 +42,7 @@ def load_weights_from_cmpc(model, pretrained_dict):# load single model
 
 def load_model(model, checkpoint_fn): # load face-voice model
     # model = models.__dict__[cfg['model']['arch']](**cfg['model']['args'])
-    print("loads chechpoint for both model:",checkpoint_fn)
+    print("loads chechpoints for voice and face model:",checkpoint_fn)
     ckp = torch.load(checkpoint_fn, map_location='cpu')
     # model.load_state_dict({k.replace('module.', ''): ckp['model'][k] for k in ckp['model']})
     model.load_state_dict(ckp['model'])
