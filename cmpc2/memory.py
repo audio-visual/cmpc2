@@ -71,15 +71,15 @@ def getKNearestSamples_bak(audio_feature, memory_path, df_path, cluster=1000,K=3
 
 if __name__ == '__main__':
     import cmpc2
-    memory_path = '/home/cwy/下载/frame_memory_best.pth.tar'
-    df_path = '/home/cwy/下载/training.csv'
+    memory_path = '/home/cwy/frame_memory_best.pth.tar'
+    df_path = '/home/cwy/training.csv'
     audio_path = './example/id10840_0eRPKDAV-I0_00001.wav'
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     audio_preprocess = cmpc2.audio_preprocess()
     audio = audio_preprocess(audio_path).unsqueeze(0).to(device)
-    path = '/home/cwy/下载/model_best.pth.tar' #pretrained cmpc weight
+    path = '/home/cwy/model_best.pth.tar' #pretrained cmpc weight
     model = cmpc2.load(path).to(device)
     # you should manually change the model mode
     model.eval()
